@@ -1,7 +1,6 @@
 from datetime import datetime
 from random import randint
 
-
 useres_table = {}
 purchases_table = {}
 items_table = {}
@@ -13,8 +12,9 @@ date = []
 price = []
 thirty_day_mounts = [4, 6, 9, 11]
 april_mount = 2
-count_data = 10  # It is count data for generate test data
-
+count_users = 1000 # 100 Count unique bayers
+count_purchases = 100000  # 10000 Count purchases
+count_items = 25 # Count unique products
 def random_date(start_yesr, end_yesr):
     year_random = randint(start_yesr, end_yesr)
     month_random = randint(1, 12)
@@ -30,29 +30,44 @@ def random_date(start_yesr, end_yesr):
     data = datetime(year_random, month_random, day_random).isoformat()
     return data
 
-def generate_data(count_data):
+def generate_users_table(count_data):
     for i in range(count_data):
-        userid.append(randint(1, 10000))
-        age.append(randint(16, 40))
-        purchaseid.append(randint(20000, 29999))
-        itemid.append(randint(30000, 39999))
-        date.append(random_date(2000, 2022))
-        price.append(randint(100, 5000))
-
+        userid.append(1000000+i) # 1000 users
+        age.append(randint(15, 65))
     useres_table = {
         "userid" : userid,
         "age" : age
     }
+    return useres_table
+
+useres_table = generate_users_table(count_users) # generate 1000 users
+def generate_items_table(count_data):
+    for i in range(count_data):
+        itemid.append(20000+i)
+        price.append(randint(100, 5000))
+    items_table = {
+        "itemid" : itemid,
+        "price": price
+    }
+    return items_table
+
+items_table = generate_items_table(count_items) # Сгенерировано 25 товаров
+
+def generate_purchases_table(count_data, useres_table, items_table):
+    userid = []
+    itemid = []
+    for i in range(count_data):
+        purchaseid.append(3000000 + i)
+        userid.append(randint(useres_table["userid"][0], useres_table["userid"][-1]))
+        itemid.append(randint(items_table["itemid"][0], items_table["itemid"][-1]))
+        date.append(random_date(2010, 2022))
+
     purchases_table = {
         "purchaseid" : purchaseid,
         "userid" : userid,
         "itemid" : itemid,
         "date" : date
     }
-    items_table = {
-        "itemid" : itemid,
-        "price": price
-    }
-    return useres_table, purchases_table, items_table
+    return purchases_table
 
-useres_table, purchases_table, items_table = generate_data(count_data)
+purchases_table = generate_purchases_table(count_purchases, useres_table, items_table) # Сгенерировано 100000 покупок
